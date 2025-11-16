@@ -51,7 +51,7 @@ Implement a complete release workflow that:
 - [ ] Workflow runs build, type-check, lint, and format checks before publishing
 - [ ] Workflow automatically publishes packages when "Version Packages" PR is merged
 - [ ] Workflow fails immediately if any package publish fails (no partial publishes)
-- [ ] Published packages are installable via `pnpm add @mdexitor/package-name`
+- [ ] Published packages are installable via `pnpm add @mdxeditor/package-name`
 - [ ] Git tags are created for each published version
 
 ## Clarifications
@@ -142,7 +142,7 @@ Implement a complete release workflow that:
 
 ```bash
 # CRITICAL: Changesets requires 'access' field in config for scoped packages
-# Scoped packages like @mdexitor/* default to restricted access
+# Scoped packages like @mdxeditor/* default to restricted access
 # Must set "access": "public" in .changeset/config.json
 
 # CRITICAL: pnpm requires specific commands for publishing
@@ -152,7 +152,7 @@ Implement a complete release workflow that:
 # CRITICAL: GitHub Actions requires NPM_TOKEN secret
 # Must create GRANULAR ACCESS token at https://www.npmjs.com/settings/tokens
 # Token type: "Granular Access Token" (not Classic)
-# Permissions: Packages and scopes -> Read and Write for @mdexitor scope
+# Permissions: Packages and scopes -> Read and Write for @mdxeditor scope
 # Expiration: Set appropriate expiration (90 days recommended)
 # Add as secret in GitHub repo settings: Settings -> Secrets -> Actions -> New repository secret
 
@@ -193,7 +193,7 @@ Implement a complete release workflow that:
 
 ```json
 {
-  "name": "@mdexitor/package-name",
+  "name": "@mdxeditor/package-name",
   "version": "0.0.1",
   "type": "module",
   "license": "MIT",
@@ -283,7 +283,7 @@ Task 5: Test the release workflow
 // Task 1: Verify package.json files
 // READ packages/source-preview-plugin/package.json
 // VERIFY required fields exist:
-//   - name (scoped: @mdexitor/*)
+//   - name (scoped: @mdxeditor/*)
 //   - version
 //   - type: "module"
 //   - license
@@ -305,9 +305,9 @@ Task 5: Test the release workflow
 //   Description
 //   ## Installation
 //   ```bash
-//   pnpm add @mdexitor/source-preview-plugin
+//   pnpm add @mdxeditor/source-preview-plugin
 //   # or
-//   npm install @mdexitor/source-preview-plugin
+//   npm install @mdxeditor/source-preview-plugin
 //   ```
 //   ## Usage
 //   Basic code example showing how to use the plugin
@@ -443,7 +443,7 @@ NPM_REGISTRY:
 GITHUB_SECRETS:
   - NPM_TOKEN: Create at https://www.npmjs.com/settings/tokens
     - Type: "Granular Access Token" (modern, more secure)
-    - Scope: Packages and scopes -> Select @mdexitor organization/scope
+    - Scope: Packages and scopes -> Select @mdxeditor organization/scope
     - Permissions: Read and Write access for packages
     - Expiration: Set to 90 days or appropriate duration
     - Add to: Repository Settings -> Secrets and variables -> Actions -> New repository secret
@@ -529,9 +529,9 @@ git push origin main
 # 4. Merge the PR
 # 5. Workflow should auto-publish packages
 # 6. Verify package appears on npm:
-#    https://www.npmjs.com/package/@mdexitor/source-preview-plugin
+#    https://www.npmjs.com/package/@mdxeditor/source-preview-plugin
 # 7. Test installation:
-pnpm add @mdexitor/source-preview-plugin
+pnpm add @mdxeditor/source-preview-plugin
 ```
 
 ## Final Validation Checklist
@@ -577,7 +577,7 @@ pnpm add @mdexitor/source-preview-plugin
 
 1. Create NPM Granular Access Token at <https://www.npmjs.com/settings/tokens>
    - Select "Granular Access Token" (not Classic Automation token)
-   - Set scope to @mdexitor packages
+   - Set scope to @mdxeditor packages
    - Grant Read and Write permissions
    - Set appropriate expiration (e.g., 90 days)
 2. Add NPM_TOKEN secret to GitHub repository (Settings -> Secrets -> Actions)

@@ -1,15 +1,15 @@
-# @mdexitor/source-preview-plugin
+# @mdxeditor/source-preview-plugin
 
 MDXEditor plugin for displaying source code editor alongside a rich-text preview in a side-by-side view.
 
 ## Installation
 
 ```bash
-pnpm add @mdexitor/source-preview-plugin
+pnpm add @mdxeditor/source-preview-plugin
 ```
 
 ```bash
-npm install @mdexitor/source-preview-plugin
+npm install @mdxeditor/source-preview-plugin
 ```
 
 ## Usage
@@ -18,8 +18,8 @@ This plugin adds a source code editor view that can be toggled alongside the ric
 
 ```tsx
 import { MDXEditor } from "@mdxeditor/editor";
-import { sourceWithPreviewPlugin } from "@mdexitor/source-preview-plugin";
-import type { SourceEditor } from "@mdexitor/source-preview-plugin";
+import { sourceWithPreviewPlugin } from "@mdxeditor/source-preview-plugin";
+import type { SourceEditor } from "@mdxeditor/source-preview-plugin";
 
 // Define your source editor component
 const MySourceEditor: SourceEditor = ({ markdown, onChange }) => {

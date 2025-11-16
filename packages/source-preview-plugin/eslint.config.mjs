@@ -1,3 +1,3 @@
-import config from '@mdexitor/tooling/eslint.config.mjs';
+import config from '@mdxeditor/tooling/eslint.config.mjs';
 
 export default config;

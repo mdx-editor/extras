@@ -30,7 +30,7 @@ For each package you want to publish, you need to configure trusted publishing o
 ### Step 1: Navigate to Package Settings
 
 1. Go to <https://www.npmjs.com/>
-2. Navigate to your package: `@mdexitor/source-preview-plugin`
+2. Navigate to your package: `@mdxeditor/source-preview-plugin`
 3. Click on **"Settings"** tab
 
 ### Step 2: Configure Trusted Publisher

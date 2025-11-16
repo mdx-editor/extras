@@ -1,5 +1,5 @@
 import { defineConfig, mergeConfig } from "vite";
-import { baseConfig } from "@mdexitor/tooling/vite.config.base";
+import { baseConfig } from "@mdxeditor/tooling/vite.config.base";
 
 export default mergeConfig(
   baseConfig,

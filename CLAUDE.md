@@ -29,14 +29,14 @@ The source-preview-plugin extends MDXEditor using the `realmPlugin` pattern from
 
 ### Shared Tooling Pattern
 
-The `@mdexitor/tooling` package exports shared configuration files:
+The `@mdxeditor/tooling` package exports shared configuration files:
 
 - `tsconfig.base.json` - Base TypeScript config with strict settings
 - `eslint.config.mjs` - ESLint with `strictTypeChecked` rules
 - `vite.config.base` - Vite library build configuration with dts plugin
 - `prettier.config.mjs` - Prettier formatting rules
 
-Packages import these configs directly (e.g., `"@mdexitor/tooling/tsconfig.base.json"`).
+Packages import these configs directly (e.g., `"@mdxeditor/tooling/tsconfig.base.json"`).
 
 ## Development Commands
 
@@ -63,8 +63,8 @@ pnpm dev                   # Start Ladle dev server (source-preview-plugin only)
 ### Working with Specific Packages
 
 ```bash
-pnpm --filter @mdexitor/source-preview-plugin build
-pnpm --filter @mdexitor/source-preview-plugin lint
+pnpm --filter @mdxeditor/source-preview-plugin build
+pnpm --filter @mdxeditor/source-preview-plugin lint
 ```
 
 ## Build System

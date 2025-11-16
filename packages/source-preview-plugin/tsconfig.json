@@ -1,5 +1,5 @@
 {
-  "extends": "@mdexitor/tooling/tsconfig.base.json",
+  "extends": "@mdxeditor/tooling/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src"

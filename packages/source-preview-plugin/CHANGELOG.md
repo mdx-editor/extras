@@ -1,4 +1,4 @@
-# @mdexitor/source-preview-plugin
+# @mdxeditor/source-preview-plugin
 
 ## 0.1.0
 

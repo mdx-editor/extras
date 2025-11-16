@@ -18,9 +18,9 @@ An MDXEditor plugin that provides side-by-side source code and preview display. 
 **Installation:**
 
 ```bash
-npm install @mdexitor/source-preview-plugin
+npm install @mdxeditor/source-preview-plugin
 # or
-pnpm add @mdexitor/source-preview-plugin
+pnpm add @mdxeditor/source-preview-plugin
 ```
 
 ## Development
@@ -40,7 +40,7 @@ pnpm install
 pnpm build
 
 # Build specific package
-pnpm --filter @mdexitor/source-preview-plugin build
+pnpm --filter @mdxeditor/source-preview-plugin build
 ```
 
 ### Development Commands
