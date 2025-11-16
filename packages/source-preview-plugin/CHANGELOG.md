@@ -1,5 +1,11 @@
 # @mdxeditor/source-preview-plugin
 
+## 0.1.3
+
+### Patch Changes
+
+- e222349: More automation improvements
+
 ## 0.1.2
 
 ### Patch Changes
