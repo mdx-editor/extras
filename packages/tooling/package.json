@@ -7,7 +7,7 @@
     "./tsconfig.base.json": "./tsconfig.base.json",
     "./eslint.config.mjs": "./eslint.config.mjs",
     "./prettier.config.mjs": "./prettier.config.mjs",
-    "./vite.config.base": "./vite.config.base.ts"
+    "./vite.config.base": "./vite.config.base.js"
   },
   "scripts": {
     "type-check": "tsc --noEmit",

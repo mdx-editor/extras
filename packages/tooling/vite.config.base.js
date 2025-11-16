@@ -7,7 +7,7 @@ import { resolve } from 'node:path';
  * Reads package.json and returns all dependencies and devDependencies
  * to be marked as external in Rollup
  */
-function getExternalDependencies(): string[] {
+function getExternalDependencies() {
   const packageJsonPath = resolve(process.cwd(), 'package.json');
   const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
