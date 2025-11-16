@@ -2,6 +2,7 @@ import type { Story } from "@ladle/react";
 import { MDXEditor } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import { typeaheadPlugin } from "..";
+import "../styles.css"; // Import default styles for this example
 
 const mockUsers = [
   "alice",
@@ -82,7 +83,6 @@ export const MultipleTypes: Story = () => {
                       <span>{user}</span>
                     </div>
                   ),
-                  className: "mentions-menu",
                   maxResults: 5,
                 },
                 {
@@ -114,7 +114,6 @@ export const MultipleTypes: Story = () => {
                       <span>{tag}</span>
                     </div>
                   ),
-                  className: "hashtag-menu",
                   maxResults: 5,
                 },
               ],
@@ -136,11 +135,15 @@ export const MultipleTypes: Story = () => {
             :hashtag[tag]
           </li>
         </ul>
+        <p style={{ marginTop: "1rem" }}>
+          <strong>Note:</strong> This example uses the default styles imported
+          from styles.css
+        </p>
       </div>
     </div>
   );
 };
 
 MultipleTypes.meta = {
-  title: "Multiple Types",
+  title: "Multiple Types (Default Styles)",
 };

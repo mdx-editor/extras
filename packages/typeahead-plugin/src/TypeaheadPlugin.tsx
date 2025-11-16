@@ -1,5 +1,4 @@
 import type { JSX } from "react";
-import "./styles.css";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   LexicalTypeaheadMenuPlugin,
@@ -76,22 +75,57 @@ function TypeaheadMenuItem({
   onClick,
   onMouseEnter,
   option,
+  config,
 }: {
   index: number;
   isSelected: boolean;
   onClick: () => void;
   onMouseEnter: () => void;
   option: TypeaheadOption;
+  config: TypeaheadConfig;
 }) {
-  let className = "item";
-  if (isSelected) {
-    className += " selected";
+  const content = option.displayElement;
+
+  // Use custom renderer if provided
+  if (config.renderMenuItemWrapper) {
+    const customWrapper = config.renderMenuItemWrapper({
+      children: content,
+      isSelected,
+      onClick,
+      onMouseEnter,
+      index,
+    });
+    return (
+      <div
+        ref={(el) => {
+          option.setRefElement(el);
+        }}
+        role="option"
+        aria-selected={isSelected}
+        id={`typeahead-item-${String(index)}`}
+      >
+        {customWrapper}
+      </div>
+    );
   }
+
+  // Default rendering with custom class names
+  const classes = ["item"];
+  if (config.menuItemClassName) {
+    classes.push(config.menuItemClassName);
+  }
+  if (isSelected) {
+    classes.push("selected");
+    if (config.menuItemSelectedClassName) {
+      classes.push(config.menuItemSelectedClassName);
+    }
+  }
+
   return (
     <li
       key={option.key}
       tabIndex={-1}
-      className={className}
+      className={classes.join(" ")}
       ref={(el) => {
         option.setRefElement(el);
       }}
@@ -100,8 +134,10 @@ function TypeaheadMenuItem({
       id={`typeahead-item-${String(index)}`}
       onMouseEnter={onMouseEnter}
       onClick={onClick}
+      data-typeahead-item="true"
+      data-selected={isSelected}
     >
-      {option.displayElement}
+      {content}
     </li>
   );
 }
@@ -187,6 +223,8 @@ function SingleTypeaheadInstance({
           config.type,
           selectedOption.value,
           config.trigger,
+          undefined,
+          config.nodeClassName,
         );
         if (nodeToReplace) {
           nodeToReplace.replace(node);
@@ -195,7 +233,7 @@ function SingleTypeaheadInstance({
         closeMenu();
       });
     },
-    [editor, config.type, config.trigger],
+    [editor, config.type, config.trigger, config.nodeClassName],
   );
 
   return (
@@ -207,32 +245,55 @@ function SingleTypeaheadInstance({
       menuRenderFn={(
         anchorElementRef,
         { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex },
-      ) =>
-        anchorElementRef.current && results.length
-          ? ReactDOM.createPortal(
-              <div className={`typeahead-popover ${config.className ?? ""}`}>
-                <ul>
-                  {options.map((option, i: number) => (
-                    <TypeaheadMenuItem
-                      key={option.key}
-                      index={i}
-                      isSelected={selectedIndex === i}
-                      onClick={() => {
-                        setHighlightedIndex(i);
-                        selectOptionAndCleanUp(option);
-                      }}
-                      onMouseEnter={() => {
-                        setHighlightedIndex(i);
-                      }}
-                      option={option}
-                    />
-                  ))}
-                </ul>
-              </div>,
-              anchorElementRef.current,
-            )
-          : null
-      }
+      ) => {
+        if (!anchorElementRef.current || !results.length) {
+          return null;
+        }
+
+        const menuItems = options.map((option, i: number) => (
+          <TypeaheadMenuItem
+            key={option.key}
+            index={i}
+            isSelected={selectedIndex === i}
+            onClick={() => {
+              setHighlightedIndex(i);
+              selectOptionAndCleanUp(option);
+            }}
+            onMouseEnter={() => {
+              setHighlightedIndex(i);
+            }}
+            option={option}
+            config={config}
+          />
+        ));
+
+        // Use custom menu renderer if provided
+        let menuContent: JSX.Element;
+        if (config.renderMenu) {
+          menuContent = config.renderMenu({
+            children: menuItems,
+            className: config.menuClassName,
+          });
+        } else {
+          // Default menu rendering with custom class names
+          const menuClasses = ["typeahead-popover"];
+          if (config.menuClassName) {
+            menuClasses.push(config.menuClassName);
+          }
+
+          menuContent = (
+            <div
+              className={menuClasses.join(" ")}
+              data-typeahead-menu="true"
+              data-state="open"
+            >
+              <ul>{menuItems}</ul>
+            </div>
+          );
+        }
+
+        return ReactDOM.createPortal(menuContent, anchorElementRef.current);
+      }}
     />
   );
 }

@@ -2,6 +2,7 @@ import type { Story } from "@ladle/react";
 import { MDXEditor } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import { typeaheadPlugin } from "..";
+import "../styles.css"; // Import default styles for this example
 
 const mockUsers = [
   "alice",
@@ -62,7 +63,6 @@ export const Mentions: Story = () => {
                       <span>{user}</span>
                     </div>
                   ),
-                  className: "mentions-menu",
                   maxResults: 5,
                 },
               ],
@@ -80,11 +80,15 @@ export const Mentions: Story = () => {
           <li>Press Enter or click to select a mention</li>
           <li>The mention will be styled and saved as :mention[user]</li>
         </ul>
+        <p style={{ marginTop: "1rem" }}>
+          <strong>Note:</strong> This example uses the default styles imported
+          from styles.css
+        </p>
       </div>
     </div>
   );
 };
 
 Mentions.meta = {
-  title: "Mentions",
+  title: "Mentions (Default Styles)",
 };

@@ -39,7 +39,8 @@
       "WebFetch(domain:github.com)",
       "Bash(pnpm info:*)",
       "mcp__serena__find_file",
-      "mcp__serena__list_dir"
+      "mcp__serena__list_dir",
+      "mcp__serena__find_symbol"
     ],
     "deny": [],
     "ask": []

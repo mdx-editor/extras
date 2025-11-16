@@ -33,7 +33,12 @@ export {
   $isTypeaheadNode,
   TypeaheadNode,
 } from "./TypeaheadNode";
-export type { TypeaheadConfig, TypeaheadPluginParams } from "./types";
+export type {
+  TypeaheadConfig,
+  TypeaheadPluginParams,
+  MenuRenderProps,
+  MenuItemWrapperProps,
+} from "./types";
 
 function createMdastImportVisitor(
   configs: TypeaheadConfig[],
@@ -52,7 +57,13 @@ function createMdastImportVisitor(
       const content = (mdastNode.children[0] as Mdast.Text).value;
 
       (lexicalParent as ElementNode).append(
-        $createTypeaheadNode(configType, content, config.trigger),
+        $createTypeaheadNode(
+          configType,
+          content,
+          config.trigger,
+          undefined,
+          config.nodeClassName,
+        ),
       );
     },
     priority: 100,
