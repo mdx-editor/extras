@@ -28,7 +28,10 @@
       "Bash(pnpm exec lefthook:*)",
       "Bash(pnpm changeset:*)",
       "Bash(cat:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh workflow:*)",
+      "Bash(gh run list:*)"
     ],
     "deny": [],
     "ask": []

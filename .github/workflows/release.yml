@@ -77,13 +77,13 @@ jobs:
           commit: "chore: version packages"
           title: "chore: version packages"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
           # NPM_TOKEN: Required for initial publish, optional after OIDC is configured
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Auto-merge non-major version PR
         if: steps.changesets.outputs.hasChangesets == 'true' && steps.changesets.outputs.pullRequestNumber != '' && steps.major.outputs.found == 'false'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           gh pr merge --squash "${{ steps.changesets.outputs.pullRequestNumber }}" --auto

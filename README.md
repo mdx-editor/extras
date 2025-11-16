@@ -4,7 +4,7 @@ A monorepo containing plugins and shared tooling for [MDXEditor](https://mdxedit
 
 ## Packages
 
-### [@mdexitor/source-preview-plugin](./packages/source-preview-plugin)
+### [@mdxeditor/source-preview-plugin](./packages/source-preview-plugin)
 
 An MDXEditor plugin that provides side-by-side source code and preview display. Allows users to toggle between rich-text editing and viewing the raw markdown source alongside the rendered preview.
 
