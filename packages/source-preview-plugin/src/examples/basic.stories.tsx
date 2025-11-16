@@ -26,29 +26,37 @@ export const Welcome: Story = () => {
           headingsPlugin(),
           sourceWithPreviewPlugin({
             viewMode: 'source',
-            editor: ({defaultValue, onChange}) => (
+            editor: ({defaultValue, onChange, error}) => (
               <div style={{paddingTop: '2rem'}}>
-              <Editor
-                height="600px"
-                width="100%"
-                defaultLanguage="markdown"
-                defaultValue={defaultValue}
-                onChange={(value) => {
-                  onChange(value ?? '')
-                }}
-                onMount={(editor) => {
-                  monacoRef.current = editor;
-                }}
-                options={{
-                  minimap: { enabled: false },
-                  lineNumbers: 'on',
-                  wordWrap: 'on',
-                  fontSize: 14,
-                  fontFamily: 'monospace',
-                  tabSize: 2,
-                  insertSpaces: true
-                }}
-              /></div>
+                <Editor
+                  height="600px"
+                  width="100%"
+                  defaultLanguage="markdown"
+                  defaultValue={defaultValue}
+                  onChange={(value) => {
+                    onChange(value ?? '')
+                  }}
+                  onMount={(editor) => {
+                    monacoRef.current = editor;
+                  }}
+                  options={{
+                    minimap: { enabled: false },
+                    lineNumbers: 'on',
+                    wordWrap: 'on',
+                    fontSize: 14,
+                    fontFamily: 'monospace',
+                    tabSize: 2,
+                    insertSpaces: true
+                  }}
+                />
+
+                {error && (
+                  <div style={{ marginTop: '1rem', color: 'red' }}>
+                    <p>{error.error}.</p>
+                  </div>
+                )}
+
+              </div>
             )
           }),
           toolbarPlugin({
