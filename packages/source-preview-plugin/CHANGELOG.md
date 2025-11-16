@@ -1,5 +1,11 @@
 # @mdxeditor/source-preview-plugin
 
+## 0.1.4
+
+### Patch Changes
+
+- 2950e8f: Updated docs
+
 ## 0.1.3
 
 ### Patch Changes
