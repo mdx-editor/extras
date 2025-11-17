@@ -221,7 +221,7 @@ function SingleTypeaheadInstance({
       editor.update(() => {
         const node = $createTypeaheadNode(
           config.type,
-          selectedOption.value,
+          config.convertToId(selectedOption.value),
           config.trigger,
           undefined,
           config.nodeClassName,
