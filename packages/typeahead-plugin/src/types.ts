@@ -29,7 +29,7 @@ export interface MenuItemWrapperProps {
 /**
  * Configuration for a single typeahead type (e.g., mentions, hashtags)
  */
-export interface TypeaheadConfig <T>{
+export interface TypeaheadConfig<T> {
   /**
    * Unique identifier for this typeahead type. It's used for the text directive name (e.g., :mention[...], :hashtag[...])
    *
@@ -59,14 +59,13 @@ export interface TypeaheadConfig <T>{
   renderMenuItem: (item: T) => JSX.Element;
 
   /**
-   * Converter function for items 
+   * Converter function for items
    * @param item - The data item to render
-   * @returns id sting value 
+   * @returns id sting value
    */
-  convertToId: (item: T) => string;
+  convertToId?: (item: T) => string;
 
-  
-  
+  renderEditor?: (item: T) => JSX.Element;
 
   /**
    * Optional: Max results to show
@@ -118,5 +117,5 @@ export interface TypeaheadPluginParams {
    * Array of typeahead configurations.
    * Each config.type must be unique.
    */
-  configs: TypeaheadConfig[];
+  configs: TypeaheadConfig<any>[];
 }

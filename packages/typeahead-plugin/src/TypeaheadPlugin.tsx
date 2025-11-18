@@ -82,7 +82,7 @@ function TypeaheadMenuItem({
   onClick: () => void;
   onMouseEnter: () => void;
   option: TypeaheadOption;
-  config: TypeaheadConfig;
+  config: TypeaheadConfig<any>;
 }) {
   const content = option.displayElement;
 
@@ -143,7 +143,7 @@ function TypeaheadMenuItem({
 }
 
 function useTypeaheadSearch(
-  config: TypeaheadConfig,
+  config: TypeaheadConfig<any>,
   queryString: string | null,
 ): string[] {
   const [results, setResults] = useState<string[]>([]);
@@ -163,8 +163,8 @@ function SingleTypeaheadInstance({
   config,
   allConfigs,
 }: {
-  config: TypeaheadConfig;
-  allConfigs: TypeaheadConfig[];
+  config: TypeaheadConfig<any>;
+  allConfigs: TypeaheadConfig<any>[];
 }) {
   const [editor] = useLexicalComposerContext();
   const [queryString, setQueryString] = useState<string | null>(null);
@@ -221,7 +221,9 @@ function SingleTypeaheadInstance({
       editor.update(() => {
         const node = $createTypeaheadNode(
           config.type,
-          config.convertToId(selectedOption.value),
+          config.convertToId == null
+            ? selectedOption.value
+            : config.convertToId(selectedOption.value),
           config.trigger,
           undefined,
           config.nodeClassName,
@@ -301,7 +303,7 @@ function SingleTypeaheadInstance({
 export function TypeaheadPlugin({
   configs,
 }: {
-  configs: TypeaheadConfig[];
+  configs: TypeaheadConfig<any>[];
 }): JSX.Element {
   return (
     <>

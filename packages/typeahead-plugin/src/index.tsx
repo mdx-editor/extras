@@ -41,7 +41,7 @@ export type {
 } from "./types";
 
 function createMdastImportVisitor(
-  configs: TypeaheadConfig[],
+  configs: TypeaheadConfig<any>[],
 ): MdastImportVisitor<TextDirective> {
   const configsByType = new Map(configs.map((c) => [c.type, c]));
 
@@ -71,7 +71,7 @@ function createMdastImportVisitor(
 }
 
 function createLexicalExportVisitor(
-  configs: TypeaheadConfig[],
+  configs: TypeaheadConfig<any>[],
 ): LexicalExportVisitor<TypeaheadNode, TextDirective> {
   const registeredTypes = new Set(configs.map((c) => c.type));
 

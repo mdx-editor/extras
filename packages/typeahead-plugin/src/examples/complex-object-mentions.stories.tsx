@@ -4,33 +4,35 @@ import "@mdxeditor/editor/style.css";
 import { TypeaheadConfig, typeaheadPlugin } from "..";
 import "../styles.css"; // Import default styles for this example
 
-const mockUsers = [
-  "alice",
-  "bob",
-  "charlie",
-  "david",
-  "emma",
-  "frank",
-  "grace",
-  "henry",
+interface UserObjec {
+  name: string;
+  id: string;
+  email: string;
+}
+
+const mockUsers: UserObjec[] = [
+  { name: "alice", id: "1", email: "alice@mdxEditor.dev" },
+  { name: "bob", id: "2", email: "bob@mdxEditor.dev" },
+  { name: "charlie", id: "3", email: "charlie@mdxEditor.dev" },
+  { name: "david", id: "4", email: "david@mdxEditor.dev" },
+  { name: "emma", id: "5", email: "emma@mdxEditor.dev" },
+  { name: "frank", id: "6", email: "frank@mdxEditor.dev" },
+  { name: "grace", id: "7", email: "grace@mdxEditor.dev" },
+  { name: "henry", id: "8", email: "henry@mdxEditor.dev" },
 ];
 
-/**
- * Basic mentions example with @ trigger
- */
-
-const StringMention: TypeaheadConfig<string> = {
+const UserMention: TypeaheadConfig<UserObjec> = {
   type: "mention",
   trigger: "@",
   searchCallback: (query: string) => {
     // Filter users based on query
     return Promise.resolve(
       mockUsers.filter((user) =>
-        user.toLowerCase().includes(query.toLowerCase()),
+        user.name.toLowerCase().includes(query.toLowerCase()),
       ),
     );
   },
-  renderMenuItem: (user: string) => (
+  renderMenuItem: (user: UserObjec) => (
     <div style={{ display: "flex", alignItems: "center" }}>
       <span
         style={{
@@ -47,19 +49,27 @@ const StringMention: TypeaheadConfig<string> = {
           fontWeight: "bold",
         }}
       >
-        {user[0].toUpperCase()}
+        {user.name[0].toUpperCase()}
       </span>
-      <span>{user}</span>
+      <span>{user.name}</span>
     </div>
   ),
-
+  convertToId: (o: UserObjec) => {
+    return o.email;
+  },
+  renderEditor: () => {
+    return <></>;
+  },
   maxResults: 5,
 };
 
-export const Mentions: Story = () => {
+/**
+ * Basic mentions example with @ trigger
+ */
+export const ComplexObjectMentions: Story = () => {
   return (
     <div style={{ padding: "2rem", maxWidth: "800px" }}>
-      <h1>Mentions Example</h1>
+      <h1>Complex Object Mentions Example</h1>
       <p>Type @ followed by a name to trigger the mentions autocomplete.</p>
       <p>Try typing: @alice or @bob</p>
       <div style={{ marginTop: "2rem" }}>
@@ -67,7 +77,7 @@ export const Mentions: Story = () => {
           markdown="Hello :mention[alice], can you help :mention[bob] with the project?"
           plugins={[
             typeaheadPlugin({
-              configs: [StringMention],
+              configs: [UserMention],
             }),
           ]}
         />
@@ -91,6 +101,6 @@ export const Mentions: Story = () => {
   );
 };
 
-Mentions.meta = {
-  title: "Mentions (Default Styles)",
+ComplexObjectMentions.meta = {
+  title: "Complex-objects-Mentions (Default Styles)",
 };
