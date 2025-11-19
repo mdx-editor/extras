@@ -29,7 +29,7 @@ export interface MenuItemWrapperProps {
 /**
  * Configuration for a single typeahead type (e.g., mentions, hashtags)
  */
-export interface TypeaheadConfig {
+export interface TypeaheadDescriptor<T> {
   /**
    * Unique identifier for this typeahead type. It's used for the text directive name (e.g., :mention[...], :hashtag[...])
    *
@@ -49,14 +49,23 @@ export interface TypeaheadConfig {
    * @param query - User's search string
    * @returns Promise resolving to array of matching items
    */
-  searchCallback: (query: string) => Promise<string[]>;
+  searchCallback: (query: string) => Promise<T[]>;
 
   /**
    * Render function for menu items
    * @param item - The data item to render
    * @returns React element to display in menu
    */
-  renderMenuItem: (item: string) => JSX.Element;
+  renderMenuItem: (item: T) => JSX.Element;
+
+  /**
+   * Converter function for items
+   * @param item - The data item to render
+   * @returns id sting value
+   */
+  convertToId?: (item: T) => string;
+
+  renderEditor?: (item: T) => JSX.Element;
 
   /**
    * Optional: Max results to show
@@ -108,5 +117,6 @@ export interface TypeaheadPluginParams {
    * Array of typeahead configurations.
    * Each config.type must be unique.
    */
-  configs: TypeaheadConfig[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  configs: TypeaheadDescriptor<any>[];
 }

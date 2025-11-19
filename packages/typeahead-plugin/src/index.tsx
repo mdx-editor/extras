@@ -25,7 +25,7 @@ import {
   TypeaheadNode,
 } from "./TypeaheadNode";
 import { TypeaheadPlugin } from "./TypeaheadPlugin";
-import type { TypeaheadConfig, TypeaheadPluginParams } from "./types";
+import type { TypeaheadDescriptor, TypeaheadPluginParams } from "./types";
 
 // Export types and helpers
 export {
@@ -33,15 +33,16 @@ export {
   $isTypeaheadNode,
   TypeaheadNode,
 } from "./TypeaheadNode";
+
 export type {
-  TypeaheadConfig,
+  TypeaheadDescriptor,
   TypeaheadPluginParams,
   MenuRenderProps,
   MenuItemWrapperProps,
 } from "./types";
 
 function createMdastImportVisitor(
-  configs: TypeaheadConfig[],
+  configs: TypeaheadDescriptor<unknown>[],
 ): MdastImportVisitor<TextDirective> {
   const configsByType = new Map(configs.map((c) => [c.type, c]));
 
@@ -71,7 +72,7 @@ function createMdastImportVisitor(
 }
 
 function createLexicalExportVisitor(
-  configs: TypeaheadConfig[],
+  configs: TypeaheadDescriptor<unknown>[],
 ): LexicalExportVisitor<TypeaheadNode, TextDirective> {
   const registeredTypes = new Set(configs.map((c) => c.type));
 
