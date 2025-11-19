@@ -1,6 +1,6 @@
 {
   "name": "@mdxeditor/typeahead-plugin",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "MDXEditor plugin for typeahead functionality",
   "type": "module",
   "license": "MIT",
