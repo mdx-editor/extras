@@ -40,7 +40,12 @@
       "Bash(pnpm info:*)",
       "mcp__serena__find_file",
       "mcp__serena__list_dir",
-      "mcp__serena__find_symbol"
+      "mcp__serena__find_symbol",
+      "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin build:*)",
+      "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin lint:*)",
+      "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin format:check:*)",
+      "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin format:*)",
+      "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin type-check:*)"
     ],
     "deny": [],
     "ask": []

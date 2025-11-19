@@ -1,0 +1,151 @@
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $getSelection } from "lexical";
+import * as Popover from "@radix-ui/react-popover";
+import { useEffect, useState, useRef } from "react";
+import type {
+  FloatingSelectionUIPluginParams,
+  SelectionRectangle,
+} from "./types";
+import { getSelectionRectangle } from "./utils/lexicalHelpers";
+
+export function FloatingSelectionUI({
+  component: Component,
+  shouldShow,
+}: FloatingSelectionUIPluginParams) {
+  const [editor] = useLexicalComposerContext();
+  const [selectionRect, setSelectionRect] = useState<SelectionRectangle | null>(
+    null,
+  );
+  const [isVisible, setIsVisible] = useState(false);
+  const isSelectingRef = useRef(false);
+
+  useEffect(() => {
+    const rootElement = editor.getRootElement();
+    if (!rootElement) return;
+
+    const handlePointerDown = () => {
+      isSelectingRef.current = true;
+      setIsVisible(false);
+    };
+
+    const handlePointerUp = () => {
+      isSelectingRef.current = false;
+
+      editor.getEditorState().read(() => {
+        const selection = $getSelection();
+
+        if (!selection || selection.isCollapsed()) {
+          setSelectionRect(null);
+          setIsVisible(false);
+          return;
+        }
+
+        const rect = getSelectionRectangle(editor);
+        if (!rect) {
+          setIsVisible(false);
+          return;
+        }
+
+        setSelectionRect(rect);
+
+        const show = shouldShow ? shouldShow(editor) : true;
+        setIsVisible(show);
+      });
+    };
+
+    rootElement.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("pointerup", handlePointerUp);
+
+    return () => {
+      rootElement.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, [editor, shouldShow]);
+
+  useEffect(() => {
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        const selection = $getSelection();
+
+        if (!selection || selection.isCollapsed()) {
+          setSelectionRect(null);
+          setIsVisible(false);
+          return;
+        }
+
+        const rect = getSelectionRectangle(editor);
+        if (!rect) {
+          return;
+        }
+
+        setSelectionRect(rect);
+
+        if (!isSelectingRef.current) {
+          const show = shouldShow ? shouldShow(editor) : true;
+          setIsVisible(show);
+        }
+      });
+    });
+  }, [editor, shouldShow]);
+
+  useEffect(() => {
+    const updatePosition = () => {
+      if (!isVisible) return;
+
+      editor.getEditorState().read(() => {
+        const selection = $getSelection();
+        if (!selection || selection.isCollapsed()) {
+          setSelectionRect(null);
+          setIsVisible(false);
+          return;
+        }
+
+        const rect = getSelectionRectangle(editor);
+        if (rect) {
+          setSelectionRect(rect);
+        }
+      });
+    };
+
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
+  }, [editor, isVisible]);
+
+  if (!isVisible || !selectionRect) {
+    return null;
+  }
+
+  return (
+    <Popover.Root open={isVisible} modal={false}>
+      <Popover.Anchor
+        style={{
+          position: "absolute",
+          top: `${String(selectionRect.top)}px`,
+          left: `${String(selectionRect.left)}px`,
+          width: `${String(selectionRect.width)}px`,
+          height: `${String(selectionRect.height)}px`,
+          pointerEvents: "none",
+        }}
+      />
+      <Popover.Content
+        side="top"
+        sideOffset={5}
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <Component
+          editor={editor}
+          close={() => {
+            setIsVisible(false);
+          }}
+        />
+      </Popover.Content>
+    </Popover.Root>
+  );
+}

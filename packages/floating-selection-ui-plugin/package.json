@@ -1,0 +1,70 @@
+{
+  "name": "@mdxeditor/floating-selection-ui-plugin",
+  "version": "0.0.0",
+  "description": "MDXEditor plugin for displaying customizable floating UI when text is selected",
+  "type": "module",
+  "license": "MIT",
+  "author": "Petyo Ivanov",
+  "homepage": "https://github.com/mdx-editor/extras/tree/main/packages/floating-selection-ui-plugin#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mdx-editor/extras.git",
+    "directory": "packages/floating-selection-ui-plugin"
+  },
+  "bugs": {
+    "url": "https://github.com/mdx-editor/extras/issues"
+  },
+  "keywords": [
+    "mdxeditor",
+    "plugin",
+    "floating",
+    "selection",
+    "toolbar",
+    "popover",
+    "editor",
+    "react",
+    "lexical"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "dev": "ladle dev"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@ladle/react": "^5.1.1",
+    "@mdxeditor/tooling": "workspace:*",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
+    "eslint": "^9.39.1",
+    "prettier": "^3.6.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2"
+  },
+  "dependencies": {
+    "@lexical/react": "^0.35.0",
+    "@mdxeditor/editor": "^3.49.0",
+    "@mdxeditor/gurx": "^1.2.4",
+    "@radix-ui/react-popover": "^1.1.2",
+    "lexical": "^0.35.0"
+  }
+}
