@@ -1,4 +1,24 @@
 import type { JSX } from "react";
+import type { TypeaheadNode } from "./TypeaheadNode";
+
+/**
+ * Props passed to custom Editor component for rendering typeahead nodes
+ */
+export interface TypeaheadEditorProps {
+  /**
+   * The TypeaheadNode instance being rendered.
+   * Use accessor methods (getContent, getTrigger, getTypeaheadType, getNodeClassName)
+   * to read node data.
+   *
+   * To access the descriptor config, use:
+   * ```tsx
+   * const descriptors = useCellValue(typeAheadDescriptors$);
+   * const config = descriptors.get(node.getTypeaheadType());
+   * ```
+   */
+  node: TypeaheadNode;
+  descriptor: TypeaheadDescriptor<unknown>;
+}
 
 /**
  * Props passed to custom menu renderer
@@ -65,7 +85,35 @@ export interface TypeaheadDescriptor<T> {
    */
   convertToId?: (item: T) => string;
 
-  renderEditor?: (item: T) => JSX.Element;
+  /**
+   * Optional: Custom React component for rendering typeahead nodes in the editor.
+   * Receives TypeaheadEditorProps with access to the node.
+   *
+   * If not provided, a default renderer is used that displays the trigger + content
+   * with appropriate CSS classes (matching current behavior).
+   *
+   * The Editor component can access the descriptor config using:
+   * ```tsx
+   * const descriptors = useCellValue(typeAheadDescriptors$);
+   * const config = descriptors.get(node.getTypeaheadType());
+   * ```
+   *
+   * @example
+   * ```tsx
+   * Editor: ({ node }) => {
+   *   const descriptors = useCellValue(typeAheadDescriptors$);
+   *   const config = descriptors.get(node.getTypeaheadType());
+   *   const content = node.getContent();
+   *   return (
+   *     <span className="mention-chip">
+   *       <Avatar user={content} />
+   *       {config?.trigger}{content}
+   *     </span>
+   *   );
+   * }
+   * ```
+   */
+  Editor?: React.ComponentType<TypeaheadEditorProps>;
 
   /**
    * Optional: Max results to show

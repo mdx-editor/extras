@@ -57,9 +57,6 @@ const UserMention: TypeaheadDescriptor<UserObject> = {
   convertToId: (o) => {
     return o.email;
   },
-  renderEditor: () => {
-    return <></>;
-  },
   maxResults: 5,
 };
 

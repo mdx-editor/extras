@@ -265,13 +265,12 @@ function SingleTypeaheadInstance<T>({
           config.type,
           content,
           config.trigger,
-          undefined,
           config.nodeClassName,
         );
         if (nodeToReplace) {
           nodeToReplace.replace(node);
         }
-        node.select();
+        // DecoratorNode doesn't have select() - cursor will be positioned after insertion
         closeMenu();
       });
     },

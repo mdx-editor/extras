@@ -179,6 +179,8 @@ Each typeahead configuration has the following properties:
 | `trigger`                   | `string`                                       | Yes      | Trigger character(s) - e.g., `"@"`, `"#"`, `":"`                                                |
 | `searchCallback`            | `(query: string) => Promise<string[]>`         | Yes      | Async function to resolve search results                                                        |
 | `renderMenuItem`            | `(item: string) => JSX.Element`                | Yes      | Render function for menu items                                                                  |
+| `Editor`                    | `React.ComponentType<TypeaheadEditorProps>`    | No       | Custom component for rendering typeahead nodes in the editor after insertion                    |
+| `convertToId`               | `(item: T) => string`                          | No       | Converter function to extract string ID from complex items                                      |
 | `maxResults`                | `number`                                       | No       | Max results to show (default: 5)                                                                |
 | `nodeClassName`             | `string`                                       | No       | Custom CSS class for the typeahead node in the editor                                           |
 | `menuClassName`             | `string`                                       | No       | Custom CSS class for the autocomplete menu container                                            |
@@ -186,6 +188,7 @@ Each typeahead configuration has the following properties:
 | `menuItemSelectedClassName` | `string`                                       | No       | Custom CSS class for the selected menu item                                                     |
 | `renderMenu`                | `(props: MenuRenderProps) => JSX.Element`      | No       | Custom menu container renderer                                                                  |
 | `renderMenuItemWrapper`     | `(props: MenuItemWrapperProps) => JSX.Element` | No       | Custom menu item wrapper renderer                                                               |
+| `loadingIndicator`          | `JSX.Element`                                  | No       | Custom loading indicator component to replace default "Loading..." text                         |
 
 ## How It Works
 
@@ -327,6 +330,93 @@ typeaheadPlugin({
   ],
 });
 ```
+
+### 5. Custom Editor Rendering
+
+Customize how typeahead nodes appear in the editor after insertion using the `Editor` prop:
+
+```tsx
+import { useCellValue } from "@mdxeditor/gurx";
+
+typeaheadPlugin({
+  configs: [
+    {
+      type: "mention",
+      trigger: "@",
+      searchCallback: async (query) => fetchUsers(query),
+      renderMenuItem: (user) => <span>@{user}</span>,
+      // Custom editor renderer
+      Editor: ({ node, descriptor }) => {
+        const content = node.getContent();
+        return (
+          <span className="mention-chip">
+            <Avatar user={content} />
+            {descriptor.trigger}
+            {content}
+          </span>
+        );
+      },
+    },
+  ],
+});
+```
+
+The `Editor` component receives:
+
+- `node` - The TypeaheadNode instance with methods like `getContent()`, `getTrigger()`, `getTypeaheadType()`
+- `descriptor` - The full descriptor config for this typeahead type
+
+**Example with rich user data:**
+
+```tsx
+interface User {
+  id: string;
+  username: string;
+  avatarUrl: string;
+}
+
+typeaheadPlugin({
+  configs: [
+    {
+      type: "mention",
+      trigger: "@",
+      searchCallback: async (query) => {
+        const response = await fetch(`/api/users?q=${query}`);
+        return await response.json();
+      },
+      renderMenuItem: (user: User) => (
+        <div className="flex items-center gap-2">
+          <img src={user.avatarUrl} className="w-6 h-6 rounded-full" />
+          <span>@{user.username}</span>
+        </div>
+      ),
+      convertToId: (user: User) => user.username,
+      // Render mentions with avatars in the editor
+      Editor: ({ node }) => {
+        const username = node.getContent();
+        const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+        useEffect(() => {
+          fetch(`/api/users/${username}`)
+            .then((res) => res.json())
+            .then((user) => setAvatarUrl(user.avatarUrl));
+        }, [username]);
+
+        return (
+          <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
+            {avatarUrl && (
+              <img src={avatarUrl} className="w-4 h-4 rounded-full" />
+            )}
+            @{username}
+          </span>
+        );
+      },
+    },
+  ],
+});
+```
+
+If `Editor` is not provided, a default renderer displays `trigger + content` with appropriate CSS classes.
 
 ## Peer Dependencies
 
