@@ -11,6 +11,7 @@ import * as ReactDOM from "react-dom";
 
 import { $createTypeaheadNode } from "./TypeaheadNode";
 import type { TypeaheadDescriptor } from "./types";
+import { editorWrapperElementRef$, useCellValue } from "@mdxeditor/editor";
 
 const PUNCTUATION =
   "\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%'\"~=<>_:;";
@@ -145,18 +146,37 @@ function TypeaheadMenuItem<T>({
 function useTypeaheadSearch<T>(
   config: TypeaheadDescriptor<T>,
   queryString: string | null,
-): T[] {
+): { results: T[]; isLoading: boolean; hasError: boolean } {
   const [results, setResults] = useState<T[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (queryString == null) {
       setResults([]);
+      setIsLoading(false);
+      setHasError(false);
       return;
     }
-    void config.searchCallback(queryString).then(setResults);
+
+    setIsLoading(true);
+    setHasError(false); // Reset error on new search
+
+    void config
+      .searchCallback(queryString)
+      .then((newResults) => {
+        setResults(newResults);
+        setIsLoading(false);
+      })
+      .catch((error: unknown) => {
+        console.error("Typeahead search callback error:", error);
+        setResults([]);
+        setIsLoading(false);
+        setHasError(true);
+      });
   }, [queryString, config]);
 
-  return results;
+  return { results, isLoading, hasError };
 }
 
 function SingleTypeaheadInstance<T>({
@@ -168,7 +188,10 @@ function SingleTypeaheadInstance<T>({
 }) {
   const [editor] = useLexicalComposerContext();
   const [queryString, setQueryString] = useState<string | null>(null);
-  const results = useTypeaheadSearch(config, queryString);
+  const { results, isLoading, hasError } = useTypeaheadSearch(
+    config,
+    queryString,
+  );
 
   // Build trigger regex for this config
   const triggerRegex = useMemo(
@@ -188,7 +211,6 @@ function SingleTypeaheadInstance<T>({
     [allConfigs, config.type],
   );
 
-  // CRITICAL: Check conflicts with other triggers
   const checkForMatch = useCallback(
     (text: string): MenuTextMatch | null => {
       // Check if any other trigger matches first
@@ -256,36 +278,92 @@ function SingleTypeaheadInstance<T>({
     [editor, config.type, config.trigger, config.nodeClassName],
   );
 
+  const parentRef = useCellValue(editorWrapperElementRef$);
+
   return (
     <LexicalTypeaheadMenuPlugin<TypeaheadOption<T>>
       onQueryChange={setQueryString}
       onSelectOption={onSelectOption}
       triggerFn={checkForMatch}
       options={options}
+      parent={parentRef?.current ?? undefined}
       menuRenderFn={(
         anchorElementRef,
         { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex },
       ) => {
-        if (!anchorElementRef.current || !results.length) {
+        if (!anchorElementRef.current || queryString === null) {
           return null;
         }
 
-        const menuItems = options.map((option, i: number) => (
-          <TypeaheadMenuItem
-            key={option.key}
-            index={i}
-            isSelected={selectedIndex === i}
-            onClick={() => {
-              setHighlightedIndex(i);
-              selectOptionAndCleanUp(option);
-            }}
-            onMouseEnter={() => {
-              setHighlightedIndex(i);
-            }}
-            option={option}
-            config={config}
-          />
-        ));
+        let menuItems: JSX.Element[];
+        let menuState: "loading" | "empty" | "error" | "results";
+
+        if (hasError) {
+          menuState = "error";
+          menuItems = [
+            <li
+              key="error"
+              className="item error-item"
+              data-error="true"
+              data-typeahead-item="true"
+              aria-disabled={true}
+              role="option"
+              aria-selected={false}
+            >
+              Error loading results
+            </li>,
+          ];
+        } else if (isLoading) {
+          menuState = "loading";
+          // Use custom loading indicator if provided, otherwise default text
+          const loadingContent = config.loadingIndicator || "Loading...";
+          menuItems = [
+            <li
+              key="loading"
+              className="item loading-item"
+              data-loading="true"
+              data-typeahead-item="true"
+              aria-disabled={true}
+              role="option"
+              aria-selected={false}
+            >
+              {loadingContent}
+            </li>,
+          ];
+        } else if (results.length === 0) {
+          menuState = "empty";
+          menuItems = [
+            <li
+              key="empty"
+              className="item empty-item"
+              data-empty="true"
+              data-typeahead-item="true"
+              aria-disabled={true}
+              role="option"
+              aria-selected={false}
+            >
+              No results found
+            </li>,
+          ];
+        } else {
+          menuState = "results";
+          menuItems = options.map((option, i: number) => (
+            <TypeaheadMenuItem
+              key={option.key}
+              index={i}
+              isSelected={selectedIndex === i}
+              onClick={() => {
+                setHighlightedIndex(i);
+                selectOptionAndCleanUp(option);
+              }}
+              onMouseEnter={() => {
+                setHighlightedIndex(i);
+              }}
+              option={option}
+              config={config}
+            />
+          ));
+        }
 
         // Use custom menu renderer if provided
         let menuContent: JSX.Element;
@@ -305,7 +383,8 @@ function SingleTypeaheadInstance<T>({
             <div
               className={menuClasses.join(" ")}
               data-typeahead-menu="true"
-              data-state="open"
+              data-state={menuState}
+              aria-live="polite"
             >
               <ul>{menuItems}</ul>
             </div>

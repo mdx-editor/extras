@@ -107,6 +107,13 @@ export interface TypeaheadDescriptor<T> {
    * Use this to integrate with component libraries like shadcn
    */
   renderMenuItemWrapper?: (props: MenuItemWrapperProps) => JSX.Element;
+
+  /**
+   * Optional: Custom loading indicator component
+   * When provided, replaces the default "Loading..." text
+   * @example <span>🔄 Loading...</span>
+   */
+  loadingIndicator?: JSX.Element;
 }
 
 /**
