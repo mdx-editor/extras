@@ -15,8 +15,7 @@ export function getSelectionRectangle(editor: LexicalEditor) {
     selection !== null &&
     nativeSelection !== null &&
     rootElement !== null &&
-    rootElement.contains(nativeSelection.anchorNode) &&
-    editor.isEditable()
+    rootElement.contains(nativeSelection.anchorNode)
   ) {
     const domRange = nativeSelection.getRangeAt(0);
     let rect;

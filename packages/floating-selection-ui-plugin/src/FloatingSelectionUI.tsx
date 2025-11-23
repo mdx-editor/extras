@@ -1,5 +1,9 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getSelection } from "lexical";
+import {
+  $getSelection,
+  COMMAND_PRIORITY_LOW,
+  SELECTION_CHANGE_COMMAND,
+} from "lexical";
 import * as Popover from "@radix-ui/react-popover";
 import { useEffect, useState, useRef } from "react";
 import type {
@@ -63,19 +67,21 @@ export function FloatingSelectionUI({
   }, [editor, shouldShow]);
 
   useEffect(() => {
-    return editor.registerUpdateListener(({ editorState }) => {
-      editorState.read(() => {
+    return editor.registerCommand(
+      SELECTION_CHANGE_COMMAND,
+      () => {
         const selection = $getSelection();
 
+        console.log("SELECTION_CHANGE_COMMAND received", selection);
         if (!selection || selection.isCollapsed()) {
           setSelectionRect(null);
           setIsVisible(false);
-          return;
+          return false;
         }
 
         const rect = getSelectionRectangle(editor);
         if (!rect) {
-          return;
+          return false;
         }
 
         setSelectionRect(rect);
@@ -84,8 +90,10 @@ export function FloatingSelectionUI({
           const show = shouldShow ? shouldShow(editor) : true;
           setIsVisible(show);
         }
-      });
-    });
+        return false;
+      },
+      COMMAND_PRIORITY_LOW,
+    );
   }, [editor, shouldShow]);
 
   useEffect(() => {

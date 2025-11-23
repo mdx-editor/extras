@@ -24,6 +24,7 @@ export const GetSelectionAsMarkdown: Story = () => {
     <div className="App" style={{ padding: "2rem" }}>
       <div style={{ marginTop: "2rem" }}>
         <MDXEditor
+          readOnly
           ref={mdxEditorRef}
           markdown={`# Welcome to MDXEditor
 
