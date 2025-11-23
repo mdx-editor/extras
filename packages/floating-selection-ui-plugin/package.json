@@ -1,6 +1,6 @@
 {
   "name": "@mdxeditor/floating-selection-ui-plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MDXEditor plugin for displaying customizable floating UI when text is selected",
   "type": "module",
   "license": "MIT",
