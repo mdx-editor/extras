@@ -1,5 +1,11 @@
 # @mdxeditor/floating-selection-ui-plugin
 
+## 0.1.2
+
+### Patch Changes
+
+- fdc5984: Support read-only mode
+
 ## 0.1.1
 
 ### Patch Changes
