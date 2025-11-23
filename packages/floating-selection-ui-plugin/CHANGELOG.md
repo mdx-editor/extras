@@ -1,5 +1,11 @@
 # @mdxeditor/floating-selection-ui-plugin
 
+## 0.1.3
+
+### Patch Changes
+
+- 023f72f: remove console.log
+
 ## 0.1.2
 
 ### Patch Changes
