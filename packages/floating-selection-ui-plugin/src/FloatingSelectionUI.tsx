@@ -72,7 +72,6 @@ export function FloatingSelectionUI({
       () => {
         const selection = $getSelection();
 
-        console.log("SELECTION_CHANGE_COMMAND received", selection);
         if (!selection || selection.isCollapsed()) {
           setSelectionRect(null);
           setIsVisible(false);
