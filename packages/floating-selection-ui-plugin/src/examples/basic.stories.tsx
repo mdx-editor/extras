@@ -61,7 +61,15 @@ export const BasicExample: Story = () => {
       </p>
       <p>The button will log the selected text to the console.</p>
 
-      <div style={{ marginTop: "2rem" }}>
+      <div
+        style={{
+          marginTop: "2rem",
+          position: "absolute",
+          top: "200px",
+          left: "200px",
+          right: "50px",
+        }}
+      >
         <MDXEditor
           onChange={(md) => {
             console.log("Markdown changed:", md);
