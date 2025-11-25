@@ -45,7 +45,22 @@
       "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin lint:*)",
       "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin format:check:*)",
       "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin format:*)",
-      "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin type-check:*)"
+      "Bash(pnpm --filter @mdxeditor/floating-selection-ui-plugin type-check:*)",
+      "Bash(pnpm --filter @mdxeditor/source-preview-plugin type-check:*)",
+      "Bash(pnpm --filter @mdxeditor/source-preview-plugin lint:*)",
+      "Bash(pnpm --filter @mdxeditor/source-preview-plugin build:*)",
+      "Bash(pnpm --filter @mdxeditor/source-preview-plugin format:check:*)",
+      "Bash(pnpm --filter @mdxeditor/source-preview-plugin format:*)",
+      "WebFetch(domain:microsoft.github.io)",
+      "Bash(gh issue view:*)",
+      "Bash(pnpm --filter @mdxeditor/typeahead-plugin type-check:*)",
+      "Bash(pnpm --filter @mdxeditor/typeahead-plugin lint:*)",
+      "Bash(pnpm --filter @mdxeditor/typeahead-plugin format:check:*)",
+      "Bash(pnpm --filter @mdxeditor/typeahead-plugin format:*)",
+      "Bash(pnpm --filter @mdxeditor/typeahead-plugin build:*)",
+      "Bash(pnpm --filter @mdxeditor/typeahead-plugin dev:*)",
+      "WebFetch(domain:mdxeditor.dev)",
+      "Bash(git mv:*)"
     ],
     "deny": [],
     "ask": []

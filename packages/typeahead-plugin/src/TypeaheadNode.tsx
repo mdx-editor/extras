@@ -1,15 +1,18 @@
 import {
   $applyNodeReplacement,
+  DecoratorNode,
   type DOMConversionMap,
   type DOMConversionOutput,
   type DOMExportOutput,
-  type EditorConfig,
   type LexicalNode,
   type NodeKey,
-  type SerializedTextNode,
+  type SerializedLexicalNode,
   type Spread,
-  TextNode,
 } from "lexical";
+import type { JSX } from "react";
+import { useCellValue } from "@mdxeditor/gurx";
+import { typeAheadDescriptors$ } from "./index";
+import { DefaultTypeaheadEditor } from "./DefaultTypeaheadEditor";
 
 export type SerializedTypeaheadNode = Spread<
   {
@@ -18,7 +21,7 @@ export type SerializedTypeaheadNode = Spread<
     trigger: string;
     nodeClassName?: string;
   },
-  SerializedTextNode
+  SerializedLexicalNode
 >;
 
 function $convertTypeaheadElement(
@@ -30,12 +33,12 @@ function $convertTypeaheadElement(
   const trigger = domNode.getAttribute("data-lexical-typeahead-trigger");
   const nodeClassName = domNode.getAttribute("data-lexical-typeahead-class");
 
-  if (typeaheadType !== null && trigger !== null && textContent) {
+  if (typeaheadType !== null && trigger !== null) {
+    const contentValue = content !== null ? content : textContent || "";
     const node = $createTypeaheadNode(
       typeaheadType,
-      content ?? textContent,
+      contentValue,
       trigger,
-      textContent,
       nodeClassName ?? undefined,
     );
     return {
@@ -46,7 +49,22 @@ function $convertTypeaheadElement(
   return null;
 }
 
-export class TypeaheadNode extends TextNode {
+/**
+ * Wrapper component that looks up descriptor from Gurx and renders appropriate Editor
+ */
+function TypeaheadEditorWrapper({ node }: { node: TypeaheadNode }) {
+  const descriptors = useCellValue(typeAheadDescriptors$);
+  const descriptor = descriptors.get(node.getTypeaheadType());
+
+  if (!descriptor) {
+    throw new Error(`unknown typeahead type: ${node.getTypeaheadType()}`);
+  }
+
+  const EditorComponent = descriptor.Editor ?? DefaultTypeaheadEditor;
+  return <EditorComponent descriptor={descriptor} node={node} />;
+}
+
+export class TypeaheadNode extends DecoratorNode<JSX.Element> {
   __typeaheadType: string;
   __content: string;
   __trigger: string;
@@ -61,36 +79,53 @@ export class TypeaheadNode extends TextNode {
       node.__typeaheadType,
       node.__content,
       node.__trigger,
-      node.__text,
       node.__key,
       node.__nodeClassName,
     );
   }
 
   static importJSON(serializedNode: SerializedTypeaheadNode): TypeaheadNode {
+    // Ignore unknown fields for forward compatibility
     return $createTypeaheadNode(
       serializedNode.typeaheadType,
       serializedNode.content,
       serializedNode.trigger,
-      undefined,
       serializedNode.nodeClassName,
-    ).updateFromJSON(serializedNode);
+    );
   }
 
   constructor(
     typeaheadType: string,
     content: string,
     trigger: string,
-    text?: string,
     key?: NodeKey,
     nodeClassName?: string,
   ) {
-    // Display trigger + content in the editor
-    super(text ?? `${trigger}${content}`, key); // CRITICAL: Pass key to parent
+    super(key);
     this.__typeaheadType = typeaheadType;
     this.__content = content;
     this.__trigger = trigger;
     this.__nodeClassName = nodeClassName;
+  }
+
+  decorate(): JSX.Element {
+    return <TypeaheadEditorWrapper node={this} />;
+  }
+
+  createDOM(): HTMLElement {
+    const span = document.createElement("span");
+    span.setAttribute("data-typeahead", "true");
+    span.setAttribute("data-typeahead-type", this.__typeaheadType);
+    span.className = `typeahead typeahead-${this.__typeaheadType}`;
+    if (this.__nodeClassName) {
+      span.className += ` ${this.__nodeClassName}`;
+    }
+    return span;
+  }
+
+  // Always return false for DecoratorNode - React handles updates
+  updateDOM(): boolean {
+    return false;
   }
 
   exportJSON(): SerializedTypeaheadNode {
@@ -100,44 +135,25 @@ export class TypeaheadNode extends TextNode {
       content: this.__content,
       trigger: this.__trigger,
       nodeClassName: this.__nodeClassName,
+      type: "typeahead",
+      version: 1,
     };
   }
 
-  createDOM(config: EditorConfig): HTMLElement {
-    const dom = super.createDOM(config);
-    // Add data attributes for styling hooks
-    dom.setAttribute("data-typeahead", "true");
-    dom.setAttribute("data-typeahead-type", this.__typeaheadType);
-
-    // Build class name
-    const classes = ["typeahead", `typeahead-${this.__typeaheadType}`];
-    if (this.__nodeClassName) {
-      classes.push(this.__nodeClassName);
-    }
-    dom.className = classes.join(" ");
-    dom.spellcheck = false;
-    return dom;
+  getContent(): string {
+    return this.__content;
   }
 
-  exportDOM(): DOMExportOutput {
-    const element = document.createElement("span");
-    element.setAttribute("data-lexical-typeahead", "true");
-    element.setAttribute("data-lexical-typeahead-type", this.__typeaheadType);
-    element.setAttribute("data-lexical-typeahead-trigger", this.__trigger);
-    if (
-      this.__text !== this.__content &&
-      this.__text !== `${this.__trigger}${this.__content}`
-    ) {
-      element.setAttribute("data-lexical-typeahead-content", this.__content);
-    }
-    if (this.__nodeClassName) {
-      element.setAttribute(
-        "data-lexical-typeahead-class",
-        this.__nodeClassName,
-      );
-    }
-    element.textContent = this.__text;
-    return { element };
+  getTrigger(): string {
+    return this.__trigger;
+  }
+
+  getTypeaheadType(): string {
+    return this.__typeaheadType;
+  }
+
+  getNodeClassName(): string | undefined {
+    return this.__nodeClassName;
   }
 
   static importDOM(): DOMConversionMap | null {
@@ -154,16 +170,20 @@ export class TypeaheadNode extends TextNode {
     };
   }
 
-  isTextEntity(): true {
-    return true;
-  }
-
-  canInsertTextBefore(): boolean {
-    return false;
-  }
-
-  canInsertTextAfter(): boolean {
-    return false;
+  exportDOM(): DOMExportOutput {
+    const element = document.createElement("span");
+    element.setAttribute("data-lexical-typeahead", "true");
+    element.setAttribute("data-lexical-typeahead-type", this.__typeaheadType);
+    element.setAttribute("data-lexical-typeahead-trigger", this.__trigger);
+    element.setAttribute("data-lexical-typeahead-content", this.__content);
+    if (this.__nodeClassName) {
+      element.setAttribute(
+        "data-lexical-typeahead-class",
+        this.__nodeClassName,
+      );
+    }
+    element.textContent = `${this.__trigger}${this.__content}`;
+    return { element };
   }
 }
 
@@ -171,19 +191,15 @@ export function $createTypeaheadNode(
   type: string,
   content: string,
   trigger: string,
-  text?: string,
   nodeClassName?: string,
 ): TypeaheadNode {
   const node = new TypeaheadNode(
     type,
     content,
     trigger,
-    text,
-    undefined,
+    undefined, // key
     nodeClassName,
   );
-  // CRITICAL: Use segmented mode for proper editing
-  node.setMode("segmented").toggleDirectionless();
   return $applyNodeReplacement(node);
 }
 

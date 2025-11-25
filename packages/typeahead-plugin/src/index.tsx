@@ -26,6 +26,11 @@ import {
 } from "./TypeaheadNode";
 import { TypeaheadPlugin } from "./TypeaheadPlugin";
 import type { TypeaheadDescriptor, TypeaheadPluginParams } from "./types";
+import { Cell } from "@mdxeditor/gurx";
+
+export const typeAheadDescriptors$ = Cell(
+  new Map<string, TypeaheadDescriptor<unknown>>(),
+);
 
 // Export types and helpers
 export {
@@ -39,7 +44,10 @@ export type {
   TypeaheadPluginParams,
   MenuRenderProps,
   MenuItemWrapperProps,
+  TypeaheadEditorProps,
 } from "./types";
+
+export { DefaultTypeaheadEditor } from "./DefaultTypeaheadEditor";
 
 function createMdastImportVisitor(
   configs: TypeaheadDescriptor<unknown>[],
@@ -62,7 +70,6 @@ function createMdastImportVisitor(
           configType,
           content,
           config.trigger,
-          undefined,
           config.nodeClassName,
         ),
       );
@@ -143,8 +150,12 @@ export const typeaheadPlugin = realmPlugin<TypeaheadPluginParams>({
       throw new Error("typeaheadPlugin: config.type values must be unique");
     }
 
+    // Publish descriptors to Gurx cell for Editor components
+    const descriptorMap = new Map(params.configs.map((c) => [c.type, c]));
+
     realm.pubIn({
       [addLexicalNode$]: TypeaheadNode,
+      [typeAheadDescriptors$]: descriptorMap,
       [addImportVisitor$]: createMdastImportVisitor(params.configs),
       [addExportVisitor$]: createLexicalExportVisitor(params.configs),
       [addComposerChild$]: () => <TypeaheadPlugin configs={params.configs} />,

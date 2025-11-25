@@ -1,73 +1,82 @@
 import type { Story } from "@ladle/react";
 import {
-  MDXEditorMethods,
-  MDXEditor,
-  toolbarPlugin,
+  codeBlockPlugin,
+  codeMirrorPlugin,
   DiffSourceToggleWrapper,
-  listsPlugin,
   headingsPlugin,
+  linkDialogPlugin,
+  linkPlugin,
+  listsPlugin,
+  MDXEditor,
+  MDXEditorMethods,
+  thematicBreakPlugin,
+  toolbarPlugin,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
+import * as monaco from "monaco-editor";
 import { useRef } from "react";
 import { sourceWithPreviewPlugin } from "..";
-import Editor from "@monaco-editor/react";
-import * as monaco from "monaco-editor";
 
-/**
- * Basic example story for the Source Preview Plugin
- */
+import { basicDark } from "cm6-theme-basic-dark";
+import { basicLight } from "cm6-theme-basic-light";
+import "./dark-theme.css";
+import { MonacoSourceEditorWithRef } from "./MonacoSourceEditor";
+import sampleContent from "./sample-content.md?raw";
+import { useDocumentTheme } from "./useDocumentTheme";
+import { MonacoDiffEditor } from "./MonacoDiffEditor";
+
 export const Welcome: Story = () => {
   const ref = useRef<MDXEditorMethods>(null);
   const monacoRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const theme = useDocumentTheme();
+
   return (
     <div className="App">
       <MDXEditor
+        className="support-dark-mode"
         ref={ref}
         onChange={(md) => {
-          console.log("change", md);
+          void md;
+          // console.log("change", md);
         }}
-        markdown="Hello world"
+        markdown={sampleContent}
         plugins={[
           listsPlugin(),
           headingsPlugin(),
+          linkPlugin(),
+          linkDialogPlugin(),
+          thematicBreakPlugin(),
+          codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
+          codeMirrorPlugin({
+            codeBlockLanguages: {
+              js: "JavaScript",
+              css: "CSS",
+              txt: "Plain Text",
+              tsx: "TypeScript",
+              "": "Unspecified",
+              bash: "Shell",
+            },
+            codeMirrorExtensions: theme === "dark" ? [basicDark] : [basicLight],
+          }),
           sourceWithPreviewPlugin({
             viewMode: "source",
             editor: ({ defaultValue, onChange, error }) => (
-              <div style={{ paddingTop: "2rem" }}>
-                <Editor
-                  height="600px"
-                  width="100%"
-                  defaultLanguage="markdown"
-                  defaultValue={defaultValue}
-                  onChange={(value) => {
-                    onChange(value ?? "");
-                  }}
-                  onMount={(editor) => {
-                    monacoRef.current = editor;
-                  }}
-                  options={{
-                    minimap: { enabled: false },
-                    lineNumbers: "on",
-                    wordWrap: "on",
-                    fontSize: 14,
-                    fontFamily: "monospace",
-                    tabSize: 2,
-                    insertSpaces: true,
-                  }}
-                />
-
-                {error && (
-                  <div style={{ marginTop: "1rem", color: "red" }}>
-                    <p>{error.error}.</p>
-                  </div>
-                )}
-              </div>
+              <MonacoSourceEditorWithRef
+                defaultValue={defaultValue}
+                onChange={onChange}
+                error={error}
+                onEditorMount={(editor) => {
+                  monacoRef.current = editor;
+                }}
+              />
             ),
+            originalMarkdown: "# hello world",
+            diffEditor: MonacoDiffEditor,
           }),
           toolbarPlugin({
             toolbarContents: () => (
               <DiffSourceToggleWrapper
-                options={["source", "rich-text"]}
+                options={["source", "rich-text", "diff"]}
                 SourceToolbar={
                   <div>
                     <button

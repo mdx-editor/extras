@@ -10,10 +10,15 @@ import {
   sourceEditor$,
   SourceEditor,
   SourceWithPreviewWrapper,
+  diffEditor$,
+  originalMarkdown$,
+  DiffEditor,
 } from "./SourceWithPreviewWrapper";
 export type {
   SourceEditor,
   SourceEditorProps,
+  DiffEditor,
+  DiffEditorProps,
 } from "./SourceWithPreviewWrapper";
 
 /**
@@ -29,14 +34,22 @@ export const sourceWithPreviewPlugin = realmPlugin<{
    * the component used to edit the source code.
    */
   editor: SourceEditor;
+  /**
+   * the component used to display the diff view.
+   */
+  diffEditor?: DiffEditor;
+  /**
+   * the original markdown content for diff comparison.
+   */
+  originalMarkdown?: string;
 }>({
   init(r, params) {
     r.sub(r.pipe(viewMode$, withLatestFrom(rootEditor$)), ([mode, editor]) => {
-      editor?.setEditable(mode !== "source");
+      editor?.setEditable(mode !== "source" && mode !== "diff");
     });
 
-    // make the initial editor non-editable if starting in source mode
-    if (params?.viewMode === "source") {
+    // make the initial editor non-editable if starting in source or diff mode
+    if (params?.viewMode === "source" || params?.viewMode === "diff") {
       const unsub = r.sub(
         r.pipe(
           rootEditor$,
@@ -53,6 +66,10 @@ export const sourceWithPreviewPlugin = realmPlugin<{
       [viewMode$]: params?.viewMode ?? "rich-text",
       [addEditorWrapper$]: SourceWithPreviewWrapper,
       ...(params?.editor ? { [sourceEditor$]: params.editor } : {}),
+      ...(params?.diffEditor ? { [diffEditor$]: params.diffEditor } : {}),
+      ...(params?.originalMarkdown
+        ? { [originalMarkdown$]: params.originalMarkdown }
+        : {}),
     });
   },
 });
