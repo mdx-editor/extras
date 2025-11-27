@@ -11,12 +11,14 @@ import type {
   SelectionRectangle,
 } from "./types";
 import { getSelectionRectangle } from "./utils/lexicalHelpers";
+import { editorRootElementRef$, useCellValue } from "@mdxeditor/editor";
 
 export function FloatingSelectionUI({
   component: Component,
   shouldShow,
 }: FloatingSelectionUIPluginParams) {
   const [editor] = useLexicalComposerContext();
+  const editorRootElementRef = useCellValue(editorRootElementRef$);
   const [selectionRect, setSelectionRect] = useState<SelectionRectangle | null>(
     null,
   );
@@ -131,28 +133,32 @@ export function FloatingSelectionUI({
     <Popover.Root open={isVisible} modal={false}>
       <Popover.Anchor
         style={{
-          position: "absolute",
+          position: "fixed",
           top: `${String(selectionRect.top)}px`,
           left: `${String(selectionRect.left)}px`,
           width: `${String(selectionRect.width)}px`,
           height: `${String(selectionRect.height)}px`,
           pointerEvents: "none",
+          border: "1px solid red",
         }}
       />
-      <Popover.Content
-        side="top"
-        sideOffset={5}
-        onOpenAutoFocus={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <Component
-          editor={editor}
-          close={() => {
-            setIsVisible(false);
+
+      <Popover.Portal container={editorRootElementRef?.current}>
+        <Popover.Content
+          side="top"
+          sideOffset={5}
+          onOpenAutoFocus={(e) => {
+            e.preventDefault();
           }}
-        />
-      </Popover.Content>
+        >
+          <Component
+            editor={editor}
+            close={() => {
+              setIsVisible(false);
+            }}
+          />
+        </Popover.Content>
+      </Popover.Portal>
     </Popover.Root>
   );
 }

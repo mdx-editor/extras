@@ -22,7 +22,25 @@ export const GetSelectionAsMarkdown: Story = () => {
   const mdxEditorRef = React.useRef<MDXEditorMethods>(null);
   return (
     <div className="App" style={{ padding: "2rem" }}>
-      <div style={{ marginTop: "2rem" }}>
+      <h1>Floating Selection UI Plugin Demo</h1>
+      <p>
+        Select text in the editor below to see the floating UI appear above your
+        selection.
+      </p>
+      <p>The button will log the selected text to the console.</p>
+
+      <p>
+        The absoltue position is to ensure the selection works as expected in
+        more complicated cases.
+      </p>
+      <div
+        style={{
+          marginTop: "2rem",
+          position: "absolute",
+          top: "100px",
+          left: "100px",
+        }}
+      >
         <MDXEditor
           readOnly
           ref={mdxEditorRef}
