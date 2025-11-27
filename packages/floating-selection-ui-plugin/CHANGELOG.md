@@ -1,5 +1,11 @@
 # @mdxeditor/floating-selection-ui-plugin
 
+## 0.1.4
+
+### Patch Changes
+
+- 49cbba1: Floating selection UI works with absolutely positioned editor. Fixes #19.
+
 ## 0.1.3
 
 ### Patch Changes
