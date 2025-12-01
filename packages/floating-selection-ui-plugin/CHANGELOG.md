@@ -1,5 +1,11 @@
 # @mdxeditor/floating-selection-ui-plugin
 
+## 0.1.5
+
+### Patch Changes
+
+- 02cb9e1: fix publishing
+
 ## 0.1.4
 
 ### Patch Changes
