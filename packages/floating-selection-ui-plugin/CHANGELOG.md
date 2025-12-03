@@ -1,5 +1,11 @@
 # @mdxeditor/floating-selection-ui-plugin
 
+## 0.2.0
+
+### Minor Changes
+
+- 868104b: Add support for configuring the side and the align of the popup
+
 ## 0.1.5
 
 ### Patch Changes
