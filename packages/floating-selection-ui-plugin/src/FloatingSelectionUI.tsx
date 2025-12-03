@@ -16,6 +16,8 @@ import { editorRootElementRef$, useCellValue } from "@mdxeditor/editor";
 export function FloatingSelectionUI({
   component: Component,
   shouldShow,
+  side = "top",
+  align = "center",
 }: FloatingSelectionUIPluginParams) {
   const [editor] = useLexicalComposerContext();
   const editorRootElementRef = useCellValue(editorRootElementRef$);
@@ -139,13 +141,13 @@ export function FloatingSelectionUI({
           width: `${String(selectionRect.width)}px`,
           height: `${String(selectionRect.height)}px`,
           pointerEvents: "none",
-          border: "1px solid red",
         }}
       />
 
       <Popover.Portal container={editorRootElementRef?.current}>
         <Popover.Content
-          side="top"
+          side={side}
+          align={align}
           sideOffset={5}
           onOpenAutoFocus={(e) => {
             e.preventDefault();

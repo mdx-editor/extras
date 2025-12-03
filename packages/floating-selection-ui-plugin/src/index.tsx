@@ -58,6 +58,8 @@ export const floatingSelectionUIPlugin =
           <FloatingSelectionUI
             component={params.component}
             shouldShow={params.shouldShow}
+            side={params.side}
+            align={params.align}
           />
         ),
       });

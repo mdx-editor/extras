@@ -13,6 +13,18 @@ export interface FloatingSelectionUIPluginParams {
    * @returns true to show UI, false to hide
    */
   shouldShow?: (editor: LexicalEditor) => boolean;
+
+  /**
+   * The side of the selection where the popover should appear
+   * @default 'top'
+   */
+  side?: "top" | "right" | "bottom" | "left";
+
+  /**
+   * The alignment of the popover relative to the selection
+   * @default 'center'
+   */
+  align?: "start" | "center" | "end";
 }
 
 export interface FloatingUIComponentProps {
