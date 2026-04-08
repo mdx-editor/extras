@@ -1,5 +1,11 @@
 # @mdxeditor/source-preview-plugin
 
+## 0.2.1
+
+### Patch Changes
+
+- 16662c9: Only constrain the rich-text editor to 50% width when the source pane is visible
+
 ## 0.2.0
 
 ### Minor Changes
