@@ -101,7 +101,10 @@ export const SourceWithPreviewWrapper: React.FC<{
           />
         </div>
       )}
-      <div className="mdxeditor-rich-text-editor" style={{ width: "50%" }}>
+      <div
+        className="mdxeditor-rich-text-editor"
+        style={viewMode === "source" ? { width: "50%" } : {}}
+      >
         {children}
       </div>
     </div>
