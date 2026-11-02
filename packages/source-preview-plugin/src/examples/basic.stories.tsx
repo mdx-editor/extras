@@ -13,7 +13,6 @@ import {
   InsertCodeBlock,
   InsertFrontmatter,
   InsertImage,
-  InsertSandpack,
   InsertTable,
   InsertThematicBreak,
   linkDialogPlugin,
@@ -156,7 +155,6 @@ export const Welcome: Story = () => {
 
                   <Separator />
                   <InsertCodeBlock />
-                  <InsertSandpack />
                   <InsertAdmonition />
 
                   <Separator />

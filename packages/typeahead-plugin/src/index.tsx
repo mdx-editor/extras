@@ -28,7 +28,11 @@ import { TypeaheadPlugin } from "./TypeaheadPlugin";
 import type { TypeaheadDescriptor, TypeaheadPluginParams } from "./types";
 import { Cell } from "@mdxeditor/gurx";
 
-export const typeAheadDescriptors$ = Cell(
+interface TypeaheadDescriptorLookup {
+  get(key: string): TypeaheadDescriptor<unknown> | undefined;
+}
+
+export const typeAheadDescriptors$ = Cell<TypeaheadDescriptorLookup>(
   new Map<string, TypeaheadDescriptor<unknown>>(),
 );
 
