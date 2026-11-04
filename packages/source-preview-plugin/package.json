@@ -1,6 +1,6 @@
 {
   "name": "@mdxeditor/source-preview-plugin",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "MDXEditor plugin for displaying source code alongside preview in a side-by-side view",
   "type": "module",
   "license": "MIT",
