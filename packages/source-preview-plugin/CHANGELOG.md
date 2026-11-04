@@ -1,5 +1,11 @@
 # @mdxeditor/source-preview-plugin
 
+## 1.0.0
+
+### Major Changes
+
+- 34c661f: Upgrade MDXEditor compatibility to version 4.5.
+
 ## 0.2.1
 
 ### Patch Changes
