@@ -1,9 +1,9 @@
 packages:
   - packages/*
 
-onlyBuiltDependencies:
-  - '@swc/core'
-  - es5-ext
-  - esbuild
-  - lefthook
-  - msw
+allowBuilds:
+  '@swc/core': true
+  es5-ext: true
+  esbuild: true
+  lefthook: true
+  msw: true
